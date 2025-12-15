@@ -1,0 +1,23 @@
+# Django and REST Framework
+Django==4.2.7
+djangorestframework==3.14.0
+
+# ASGI server
+uvicorn[standard]==0.24.0
+gunicorn==21.2.0
+
+# AWS SDK
+boto3==1.29.7
+botocore==1.32.7
+
+# Environment variables
+python-dotenv==1.0.0
+
+# CORS headers (useful for frontend integration)
+django-cors-headers==4.3.1
+
+# Additional utilities
+email-validator==2.1.0
+
+
+

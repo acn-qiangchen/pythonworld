@@ -1,0 +1,64 @@
+# Terraform Variables Configuration
+# Copy this file to terraform.tfvars and update with your values
+
+#############################################
+# Required Variables
+#############################################
+
+# AWS Region
+aws_region = "us-east-1"
+
+# Environment (dev, staging, prod)
+environment = "prod"
+
+# Email address to verify and use for sending
+sender_email = "noreply@yourdomain.com"
+
+#############################################
+# Optional: Domain Verification
+#############################################
+
+# If you want to verify an entire domain instead of just an email
+# domain_name = "yourdomain.com"
+
+# If you're using Route53 for DNS, provide the zone ID
+# route53_zone_id = "Z1234567890ABC"
+
+#############################################
+# IAM Configuration
+#############################################
+
+# Name for the IAM user (default: SysSESAdmin)
+iam_user_name = "SysSESAdmin"
+
+# List of email addresses allowed to send from (for security)
+allowed_sender_emails = [
+  "noreply@yourdomain.com",
+  "support@yourdomain.com",
+  "alerts@yourdomain.com"
+]
+
+#############################################
+# Monitoring Configuration
+#############################################
+
+# Enable CloudWatch event tracking
+enable_cloudwatch_events = true
+
+# Enable CloudWatch alarms for bounce/complaint rates
+enable_cloudwatch_alarms = true
+
+# Enable SNS notifications for bounces and complaints
+enable_sns_notifications = true
+
+# Email to receive bounce/complaint notifications
+notification_email = "admin@yourdomain.com"
+
+#############################################
+# Project Configuration
+#############################################
+
+project_name = "email-api"
+
+
+
