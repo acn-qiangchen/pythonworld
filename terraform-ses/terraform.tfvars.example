@@ -60,5 +60,19 @@ notification_email = "admin@yourdomain.com"
 
 project_name = "email-api"
 
+#############################################
+# Email Authentication (SPF/DMARC)
+#############################################
+
+# DMARC policy enforcement
+# Options: "none" (monitor only), "quarantine" (spam folder), "reject" (block)
+dmarc_policy = "quarantine"
+
+# Email to receive DMARC aggregate reports (rua) - required for DMARC
+dmarc_report_email = "dmarc-reports@yourdomain.com"
+
+# Enable DMARC forensic reports (ruf) - optional, provides detailed failure samples
+dmarc_forensic_reports_enabled = false
+
 
 

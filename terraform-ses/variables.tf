@@ -85,5 +85,30 @@ variable "notification_email" {
   default     = ""
 }
 
+#############################################
+# Email Authentication Configuration
+#############################################
 
+variable "dmarc_policy" {
+  description = "DMARC policy (none, quarantine, or reject)"
+  type        = string
+  default     = "quarantine"
+  
+  validation {
+    condition     = contains(["none", "quarantine", "reject"], var.dmarc_policy)
+    error_message = "DMARC policy must be one of: none, quarantine, reject"
+  }
+}
+
+variable "dmarc_report_email" {
+  description = "Email address to receive DMARC aggregate reports (rua). Leave empty to disable DMARC."
+  type        = string
+  default     = ""
+}
+
+variable "dmarc_forensic_reports_enabled" {
+  description = "Enable DMARC forensic reports (ruf). Provides detailed failure samples but can be overwhelming."
+  type        = bool
+  default     = false
+}
 

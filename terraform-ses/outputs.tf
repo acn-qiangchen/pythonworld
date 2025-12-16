@@ -57,6 +57,20 @@ output "ses_dkim_tokens" {
   value       = var.domain_name != "" ? aws_ses_domain_dkim.domain[0].dkim_tokens : []
 }
 
+output "ses_spf_record" {
+  description = "SPF record value (automatically created if using Route53)"
+  value       = "v=spf1 include:amazonses.com ~all"
+}
+
+output "ses_dmarc_record" {
+  description = "DMARC record value (automatically created if using Route53)"
+  value       = var.dmarc_report_email != "" ? (
+    var.dmarc_forensic_reports_enabled ?
+      "v=DMARC1; p=${var.dmarc_policy}; rua=mailto:${var.dmarc_report_email}; ruf=mailto:${var.dmarc_report_email}; pct=100; adkim=s; aspf=s" :
+      "v=DMARC1; p=${var.dmarc_policy}; rua=mailto:${var.dmarc_report_email}; pct=100; adkim=s; aspf=s"
+  ) : null
+}
+
 output "ses_configuration_set_name" {
   description = "Name of the SES configuration set"
   value       = aws_ses_configuration_set.main.name
@@ -142,7 +156,8 @@ output "next_steps" {
        ${var.enable_sns_notifications ? "- Bounce/complaint notifications will be sent to: ${var.notification_email}" : "- Enable SNS notifications for bounce/complaint tracking"}
        ${var.enable_cloudwatch_alarms ? "- CloudWatch alarms are configured for high bounce/complaint rates" : ""}
     
-    ${var.domain_name != "" ? "6. DNS CONFIGURATION (if using domain):\n       - Add the verification TXT record to your DNS\n       - Add the DKIM CNAME records to your DNS\n       - Run 'terraform output' to see the DNS records" : ""}
+    ${var.domain_name != "" && var.route53_zone_id != "" ? "6. DNS RECORDS (Route53 - AUTOMATIC):\n       ✅ Domain verification TXT record created\n       ✅ 3 DKIM CNAME records created\n       ✅ SPF TXT record created\n       ${var.dmarc_report_email != "" ? "✅ DMARC TXT record created" : "⚠️  DMARC not configured (set dmarc_report_email)"}\n       \n       Total: ${var.dmarc_report_email != "" ? "6" : "5"} DNS records created automatically!" : ""}
+    ${var.domain_name != "" && var.route53_zone_id == "" ? "6. DNS CONFIGURATION (Manual - no Route53):\n       - Add the verification TXT record to your DNS\n       - Add the 3 DKIM CNAME records to your DNS\n       - Add the SPF TXT record to your DNS\n       - Add the DMARC TXT record to your DNS\n       - Run 'terraform output' to see all DNS records" : ""}
     
     For more information, see: README.md
     

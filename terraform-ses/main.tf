@@ -78,6 +78,31 @@ resource "aws_route53_record" "dkim" {
   records = ["${aws_ses_domain_dkim.domain[0].dkim_tokens[count.index]}.dkim.amazonses.com"]
 }
 
+# SPF record for email authentication
+resource "aws_route53_record" "spf" {
+  count   = var.domain_name != "" && var.route53_zone_id != "" ? 1 : 0
+  zone_id = var.route53_zone_id
+  name    = var.domain_name
+  type    = "TXT"
+  ttl     = 300
+  records = ["v=spf1 include:amazonses.com ~all"]
+}
+
+# DMARC record for email policy enforcement
+# Note: rua (aggregate reports) is required, ruf (forensic reports) is optional
+resource "aws_route53_record" "dmarc" {
+  count   = var.domain_name != "" && var.route53_zone_id != "" && var.dmarc_report_email != "" ? 1 : 0
+  zone_id = var.route53_zone_id
+  name    = "_dmarc.${var.domain_name}"
+  type    = "TXT"
+  ttl     = 300
+  records = [
+    var.dmarc_forensic_reports_enabled ? 
+      "v=DMARC1; p=${var.dmarc_policy}; rua=mailto:${var.dmarc_report_email}; ruf=mailto:${var.dmarc_report_email}; pct=100; adkim=s; aspf=s" :
+      "v=DMARC1; p=${var.dmarc_policy}; rua=mailto:${var.dmarc_report_email}; pct=100; adkim=s; aspf=s"
+  ]
+}
+
 #############################################
 # SES Configuration Set (for tracking)
 #############################################
